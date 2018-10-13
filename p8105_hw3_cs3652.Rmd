@@ -9,3 +9,34 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(tidyverse)
+library(httr)
+library(jsonlite)
+
+var_names = GET("https://chronicdata.cdc.gov/views/acme-vg9e.json") %>%
+  content("text") %>%
+  fromJSON() %>% 
+  .[["columns"]] %>% 
+  .[["name"]] %>% 
+  .[-23]
+
+brfss_smart2010 = 
+  GET("https://chronicdata.cdc.gov/views/acme-vg9e/rows.json") %>% 
+  content("text") %>%
+  fromJSON() %>% 
+  .[["data"]]
+
+row_as_tibble = function(row_as_list, var_names) {
+  var_list = row_as_list[9:30]
+  names(var_list) = var_names 
+  var_list[sapply(var_list, is.null)] <- NULL
+  as_tibble(var_list, validate = FALSE)
+}
+
+brfss_smart2010 = 
+  brfss_smart2010 %>% 
+  map(.x = ., ~row_as_tibble(.x, var_names)) %>% 
+  bind_rows
+```
+
