@@ -1,0 +1,67 @@
+---
+title: "homework3 scrap"
+author: "Chirag Shah"
+date: '2018-10-14'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(httr)
+library(jsonlite)
+```
+
+```{r}
+library(p8105.datasets)
+data("brfss_smart2010")
+
+brfss_data = brfss_smart2010 %>% 
+  janitor::clean_names() %>% 
+  select(location_abbr = locationabbr, location_desc = locationdesc, year, topic, response) %>% 
+  ##rename(data_source = datasource) %>% 
+  ##rename(class_id = classid) %>% 
+  ##rename(topic_id = topicid) %>% 
+  ##rename(question_id = questionid) %>% 
+  ##rename(resp_id = respid) %>% 
+  filter(topic == "Overall Health") %>% 
+  filter(response == "Excellent" | response == "Very good" | response == "Good" | response == "Fair" | response == "Poor") %>% 
+  mutate(response = factor(response, levels = ordered(c("Excellent", "Very good", "Good", "Fair", "Poor"))))
+```
+
+```{r}
+brfss_data %>% 
+  select(year, location_abbr, location_desc) %>% 
+  filter(year == "2002") %>% 
+  distinct(location_desc, location_abbr) %>% 
+  group_by(location_abbr) %>% 
+  summarize(locations_7 = n()) %>% 
+  filter(locations_7 == "7")
+```
+
+```{r}
+brfss_data %>% 
+  select(year, location_abbr, location_desc) %>% 
+  filter(year > 2001, year < 2011) %>% 
+  group_by(location_abbr, year) %>% 
+  distinct(location_desc, location_abbr) %>% 
+  summarize(locations_per_state = n()) %>%
+  ggplot(aes(x = year, y = locations_per_state, color = location_abbr)) +
+  geom_line() +
+  labs(
+    title = "Number of Locations in Each State From 2002-2010",
+    x = "year",
+    y = "number of locations",
+  ) +
+  viridis::scale_color_viridis(
+    name = "state", 
+    discrete = TRUE
+  ) + 
+  theme_bw() + 
+  theme(legend.position = "bottom")
+```
+
+
