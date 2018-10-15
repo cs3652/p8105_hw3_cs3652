@@ -172,3 +172,33 @@ instacart_data %>%
 
 ##Problem 3 
 
+```{r}
+library(p8105.datasets)
+data(ny_noaa)
+```
+
+`r nrow(ny_noaa)`
+`r ncol(ny_noaa)` 
+`r count(ny_noaa)` observations
+`r ny_noaa %>% distinct(id) %>% count()` distinct weather stations
+key variables: id `r ny_noaa %>% select(id) %>% head(1)` 
+date of the weather observation `r ny_noaa %>% select(date) %>% head(1)`
+precipitation that occurred 
+tmax and tmin variables give maximum and minimum temperatures
+missing data values in this data set for prcp, tmin, and tmax `r ny_noaa %>% filter(is.na(tmax) | is.na(tmin) | is.na(prcp) | is.na(snow) | is.na(snwd)) %>% nrow()` 
+
+```{r}
+ny_noaa_data = ny_noaa %>%
+  janitor::clean_names() %>% 
+  separate(date, into = c("year", "month", "day"), sep = "-") %>%
+  mutate(prcp = prcp / 10, tmax = as.integer(tmax) / 10, tmin = as.integer(tmin) / 10)
+  ##change to appropriate units since prcp was in tenths of mm and temperatures were in tenths of degrees celcius 
+ny_noaa_data %>% 
+  group_by(snow) %>% 
+  summarize(freq_observed = n()) %>% 
+  arrange(desc(freq_observed)) %>% 
+  head(1)
+```
+
+
+
