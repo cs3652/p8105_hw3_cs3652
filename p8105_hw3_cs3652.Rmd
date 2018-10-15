@@ -6,11 +6,7 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-fig.width = 6,
-fig.asp = .6,
-out.width = "90%"
-)
+knitr::opts_chunk$set
 ```
 
 ```{r}
@@ -79,6 +75,7 @@ brfss_data %>%
   theme(legend.position = "bottom", legend.text = element_text(size = 6), legend.key.size = unit(2, "point"))
 ##makeing the graph easier to read and using formats to make it look good
 ```
+This graph depicts the number of locations in each state for every year from 2002 to 2010 (inclusive). The speghetti plot probably wasn't the best graphing tool to depict this data. 
 
 ```{r}
 brfss_data %>%
@@ -93,6 +90,7 @@ brfss_data %>%
   knitr::kable()
   ##creating good looking table
 ```
+This table consisely shows the mean and standard deviation of the propotion of excellent responses across locations in NY State for 2002, 2006, and 2010. 
 
 ```{r}
 brfss_data %>% 
@@ -119,6 +117,7 @@ brfss_data %>%
   facet_grid(~ response) 
   ##panelling by the response variable 
 ```
+This graph depicts the distribution of state-level average proportion in each response category. There are 5 panels which shows the distribution of each response type separately. 
 
 ##Problem 2
 
@@ -132,12 +131,7 @@ instacart_data = instacart %>%
   ##tidying variable names
 ```
 
-
-To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and giving illstrative examples of observations. Then, do or answer the following (commenting on the results of each):
-`r nrow(instacart_data)` `r ncol(instacart_data)` observations: `r count(instacart_data)` distict users `r instacart_data %>% distinct(user_id) %>% count()` 
-key variables: `user_id` `r instacart_data %>% select(user_id) %>% head(1)`
-`product_name` `r instacart_data %>% select(product_name) %>% head(1)`
-`department` `r instacart_data %>% select(department) %>% head(1)`
+This data set contains `r nrow(instacart_data)` rows and `r ncol(instacart_data)` colums with `r count(instacart_data)` overvations. There were `r instacart_data %>% distinct(user_id) %>% count()` distinct user ids in this dataset. Some of the key variables are `user_id`, `product_name`, and `department`. One illustrative example is `r instacart_data %>% select(user_id) %>% head(1)`, who purchased `r instacart_data %>% select(product_name) %>% head(1)` from `r instacart_data %>% select(department) %>% head(1)` department. 
 
 ```{r}
 instacart_data %>% 
@@ -155,8 +149,8 @@ instacart_data %>%
   head(1)
   ##choosing the top observation
 ```
+There are `r instacart_data %>% select(aisle) %>% count()` aisles. The aisle that most items are ordered from is `r instacart_data %>% group_by(aisle) %>% summarize(amount_ordered = n()) %>% arrange(desc(amount_ordered)) %>% select(aisle) %>% head(1)`. 
 
-Make a plot that shows the number of items ordered in each aisle. Order aisles sensibly, and organize your plot so others can read it.
 ```{r}
 instacart_data %>% 
   group_by(aisle) %>% 
@@ -175,9 +169,8 @@ instacart_data %>%
     theme(legend.position = "bottom")
   ##making graph easier to read
 ```
+This plot shows the number of items ordered in each aisle. 
 
-    Make a table showing the most popular item in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”.
-    
 ```{r}
 instacart_data %>% 
   filter(aisle == "baking ingredients" | aisle == "dog food care" | aisle == "packaged vegetables fruits") %>% 
@@ -194,8 +187,7 @@ instacart_data %>%
   knitr::kable()
   ##creating table that is easy to read
 ```
-
-    Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
+This table shows the most populat item in each of the aisles "baking ingredients", "dog food care", and "packaged vegetables fruits". 
 
 ```{r}
 instacart_data %>% 
@@ -209,6 +201,7 @@ instacart_data %>%
   knitr::kable()
   ##making readable table
 ```
+This 2x7 table shows the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. 
 
 ##Problem 3 
 
@@ -218,15 +211,7 @@ data(ny_noaa)
 ##reading in the data
 ```
 
-`r nrow(ny_noaa)`
-`r ncol(ny_noaa)` 
-`r count(ny_noaa)` observations
-`r ny_noaa %>% distinct(id) %>% count()` distinct weather stations
-key variables: id `r ny_noaa %>% select(id) %>% head(1)` 
-date of the weather observation `r ny_noaa %>% select(date) %>% head(1)`
-precipitation that occurred 
-tmax and tmin variables give maximum and minimum temperatures
-missing data values in this data set for prcp, tmin, and tmax `r ny_noaa %>% filter(is.na(tmax) | is.na(tmin) | is.na(prcp) | is.na(snow) | is.na(snwd)) %>% nrow()` 
+This dataset contains `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns, with `r count(ny_noaa)` observations. There are `r ny_noaa %>% distinct(id) %>% count()` distinct weather stations in this dataset. Some key variables are the id (`id`), the date of weather observation (`date`), the precipitation that occured (`prcp`), the maximum and minimum temperatures (given by `tmax` and `tmin` respectively). One illustrative example is for the station with id `r ny_noaa %>% select(id) %>% head(1)` where they measured weather data on `r ny_noaa %>% select(date) %>% head(1)`. There was several missing observations in this dataset for prcp, tmin, and tmax. It's a significant issue because there are `r ny_noaa %>% filter(is.na(tmax) | is.na(tmin) | is.na(prcp) | is.na(snow) | is.na(snwd)) %>% nrow()` missing observations. 
 
 ```{r}
 ny_noaa_data = ny_noaa %>%
@@ -245,8 +230,7 @@ ny_noaa_data %>%
   head(1)
   ##getting top observation after arragement 
 ```
-
-Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
+For snowfall the most commonly observed value is 0. This is probably because snow doesn't fall in most months of the calendar year thus the value is 0. 
 
 ```{r}
 ny_noaa_data %>% 
@@ -276,8 +260,7 @@ ny_noaa_data %>%
     guides(color = guide_legend(nrow = 20))
   ##making the graph easier to read 
 ```
-
-Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+This plot depicts the average maximum temperature in January and July in each station across the years. There is some observable/interpretable structure ascertained from this graph in that average maximum temperatures are higher in July than January across the years. There are two outliers that are easily observable from this graph in July of 2004 where there was one datapoint for tmax much lower than the others. The other looks like it occured in Janurary of 1993 where the tmax was much lower than the others in that year and month. 
 
 ```{r}
 t_max_min_plot = ny_noaa_data %>% 
@@ -314,5 +297,5 @@ snowfall_plot = ny_noaa_data %>%
 
 t_max_min_plot / snowfall_plot
 ```
-
+The above plot is multipanelled showing the relationship between maximum temperature and minimum temperature for the full dataset as well as showing the distribution of snowfall by year in the form of a boxplot. 
 
